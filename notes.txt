@@ -1,0 +1,20 @@
+
+
+Dependency Injection Using Interfaces :-
+	@Primary is used when there are multiple implementation of the interface class and micronaut doesn't know which one to use
+	
+	
+Message: Multiple possible bean candidates found: [com.manish.test.services.HelloServiceImpl, com.manish.test.services.HelloServiceImpl2]
+Path Taken: new HelloController2() --> HelloController2.service
+	at io.micronaut.context.AbstractInitializableBeanDefinition.resolveBean(AbstractInitializableBeanDefinition.java:2087)
+	at io.micronaut.context.AbstractInitializableBeanDefinition.getBeanForField(AbstractInitializableBeanDefinition.java:1603)
+	
+@Named annotation can be used to qualify the implementation by name
+
+@Inject
+@Get
+@Named
+@Primary
+
+@MicronautTest
+@Client
