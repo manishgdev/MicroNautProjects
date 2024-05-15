@@ -1,7 +1,23 @@
 micronaut:
   application:
     name: firstProject
+  server:
+    port: ${SERVER_PORT:8080}
+# Pre-defined Environment variables are given preference over user defined variables
+# SERVER_PORT will be overwritten by MICRONAUT_SERVER_PORT if it is present in environment variables
+# SERVER_PORT=8090 removed from environment variable
+# ${SERVER_PORT:8080} - the value after colon denotes the fallback value if the name is not present in environment variables
+
 netty:
   default:
     allocator:
       max-order: 3
+
+hello:
+  world:
+    message: "hello from application config"
+    message2: "another message from config to test property injection through field"
+    translation:
+        de: "Hello Welt"
+        en: "Hello World"
+

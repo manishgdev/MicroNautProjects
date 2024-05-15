@@ -1,5 +1,6 @@
 package com.manish.test;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
@@ -54,6 +55,27 @@ class HelloWorldTest {
     public void test6() {
         var response = client.toBlocking().exchange("/hello/constr-inject", String.class);
         assertEquals("Hello from service!", response.body());
+        assertEquals(HttpStatus.OK, response.getStatus());
+    }
+
+    @Test
+    public void test7() {
+        var response = client.toBlocking().exchange("/hello/config", String.class);
+        assertEquals("hello from application config", response.body());
+        assertEquals(HttpStatus.OK, response.getStatus());
+    }
+
+    @Test
+    public void test8() {
+        var response = client.toBlocking().exchange("/hello/config2", String.class);
+        assertEquals("another message from config to test property injection through field", response.body());
+        assertEquals(HttpStatus.OK, response.getStatus());
+    }
+
+    @Test
+    public void test9() {
+        var response = client.toBlocking().exchange("/hello/translation", JsonNode.class);
+        assertEquals("{\"de\":\"Hello Welt\",\"en\":\"Hello World\"}", response.getBody().get().toString());
         assertEquals(HttpStatus.OK, response.getStatus());
     }
 }
