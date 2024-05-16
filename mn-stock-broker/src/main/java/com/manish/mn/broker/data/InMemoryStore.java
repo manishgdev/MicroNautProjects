@@ -1,7 +1,7 @@
 package com.manish.mn.broker.data;
 
 import com.github.javafaker.Faker;
-import com.manish.mn.broker.Symbol;
+import com.manish.mn.broker.model.Symbol;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +19,13 @@ public class InMemoryStore {
 
     @PostConstruct
     public void initialize() {
-        IntStream.range(0, 10).forEach(i ->
-            addNewSymbol()
+        initializeWith(10);
+    }
+
+    public void initializeWith(int numOfEntries) {
+        symbols.clear();
+        IntStream.range(0, numOfEntries).forEach(i ->
+                addNewSymbol()
         );
     }
 
