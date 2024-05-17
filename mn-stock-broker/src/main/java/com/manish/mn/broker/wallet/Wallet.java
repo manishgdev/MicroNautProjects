@@ -14,7 +14,7 @@ public record Wallet(
         BigDecimal locked
 ) implements IRestApiResponse {
 
-    public Wallet depositToWallet(BigDecimal amount) {
+    public Wallet addToWallet(BigDecimal amount) {
         return new Wallet(
                 this.accountId,
                 this.walletId,

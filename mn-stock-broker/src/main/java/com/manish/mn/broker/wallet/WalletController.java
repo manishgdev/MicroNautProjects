@@ -23,7 +23,8 @@ import java.util.UUID;
 @Controller("/account/wallets")
 public record WalletController(InMemoryAccountStore store) {
     public static final List<String> SUPPORTED_FIAT_CURRENCIES = List.of("EUR", "USD", "CHF", "GBP");
-    public static final UUID ACCOUNT_ID = UUID.randomUUID();
+//    public static final UUID ACCOUNT_ID = UUID.randomUUID();
+    public static final UUID ACCOUNT_ID = InMemoryAccountStore.ACCOUNT_ID;
     private static final Logger LOG = LoggerFactory.getLogger(WatchlistController.class);
 
     @Get(produces = MediaType.APPLICATION_JSON)
@@ -56,10 +57,15 @@ public record WalletController(InMemoryAccountStore store) {
             produces = MediaType.APPLICATION_JSON,
             consumes = MediaType.APPLICATION_JSON
     )
-    public void withdrawFiatMoney(@Body DepositFiatMoney withdraw) {
+    public MutableHttpResponse<Wallet> withdrawFiatMoney(@Body DepositFiatMoney withdraw) {
         if (!SUPPORTED_FIAT_CURRENCIES.contains(withdraw.symbol().value())) {
             throw new FiatCurrencyNotSupportedException(String.format("Only %s are supported", SUPPORTED_FIAT_CURRENCIES));
         }
+
+        var wallet = store.withdrawFromWallet(withdraw);
+        LOG.debug("Withdraw from wallet {}", wallet);
+
+        return HttpResponse.ok().body(wallet);
     }
 
 }
