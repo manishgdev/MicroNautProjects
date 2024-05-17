@@ -21,8 +21,7 @@ import org.slf4j.LoggerFactory;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @MicronautTest
 public class WatchlistControllerTest {
@@ -41,6 +40,14 @@ public class WatchlistControllerTest {
         inMemoryAccountStore.deleteWatchList(TEST_ACCOUNT_ID);
     }
 
+    private void createWatchListForAccount() {
+        inMemoryAccountStore.updateWatchList(TEST_ACCOUNT_ID, new WatchList(
+                Stream.of("APPL", "GOOGL", "MSFT")
+                        .map(Symbol::new)
+                        .toList()
+        ));
+    }
+
     @Test
     void test1() {
         final WatchList result = client.toBlocking().retrieve("/", WatchList.class);
@@ -49,11 +56,7 @@ public class WatchlistControllerTest {
 
     @Test
     void test2() {
-        inMemoryAccountStore.updateWatchList(TEST_ACCOUNT_ID, new WatchList(
-                Stream.of("APPL", "GOOGL", "MSFT")
-                        .map(Symbol::new)
-                        .toList()
-        ));
+        createWatchListForAccount();
 
         var response = client.toBlocking().exchange("/", JsonNode.class);
         assertEquals(HttpStatus.OK, response.getStatus());
@@ -79,5 +82,18 @@ public class WatchlistControllerTest {
         assertEquals(HttpStatus.OK, response.getStatus());
         assertEquals(symbols, inMemoryAccountStore.getWatchList(TEST_ACCOUNT_ID).symbols());
 
+    }
+
+    @Test
+    void test4() {
+        createWatchListForAccount();
+
+        assertFalse(inMemoryAccountStore.getWatchList(TEST_ACCOUNT_ID).symbols().isEmpty());
+
+        final var request = HttpRequest.DELETE("/");
+
+        HttpResponse<Object> response = client.toBlocking().exchange(request);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatus());
+        assertTrue(inMemoryAccountStore.getWatchList(TEST_ACCOUNT_ID).symbols().isEmpty());
     }
 }

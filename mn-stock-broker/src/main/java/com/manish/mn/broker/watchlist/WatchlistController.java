@@ -3,11 +3,9 @@ package com.manish.mn.broker.watchlist;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manish.mn.broker.data.InMemoryAccountStore;
 import com.manish.mn.broker.model.WatchList;
+import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
-import io.micronaut.http.annotation.Body;
-import io.micronaut.http.annotation.Controller;
-import io.micronaut.http.annotation.Get;
-import io.micronaut.http.annotation.Put;
+import io.micronaut.http.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,5 +36,11 @@ public record WatchlistController(InMemoryAccountStore store) {
             e.printStackTrace();
         }
         return store.updateWatchList(ACCOUNT_ID, watchList);
+    }
+
+    @Status(HttpStatus.NO_CONTENT)
+    @Delete(produces = MediaType.APPLICATION_JSON)
+    public void delete() {
+        store.deleteWatchList(ACCOUNT_ID);
     }
 }
