@@ -3,6 +3,7 @@ package com.manish.mn.broker.watchlist;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.manish.mn.broker.data.InMemoryAccountStore;
 import com.manish.mn.broker.model.WatchList;
+import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;
@@ -38,9 +39,10 @@ public record WatchlistController(InMemoryAccountStore store) {
         return store.updateWatchList(ACCOUNT_ID, watchList);
     }
 
-    @Status(HttpStatus.NO_CONTENT)
+//    @Status(HttpStatus.NO_CONTENT) // @Status() is similar to returning return HttpResponse.noContent();
     @Delete(produces = MediaType.APPLICATION_JSON)
-    public void delete() {
+    public HttpResponse<Void> delete() {
         store.deleteWatchList(ACCOUNT_ID);
+        return HttpResponse.noContent();
     }
 }
